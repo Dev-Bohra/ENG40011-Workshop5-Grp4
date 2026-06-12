@@ -1,8 +1,10 @@
+## Script for testing if the camera is connected or not.
+
 import cv2
-cap = cv2.VideoCapture(1, cv2.CAP_DSHOW)
+cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 
 if not cap.isOpened():
-    print("❌ Camera not detected")
+    print("Camera not detected")
     exit()
 
 while True:

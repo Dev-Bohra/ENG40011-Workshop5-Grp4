@@ -8,8 +8,8 @@ ROOT = Path(__file__).resolve().parents[1]
 MODEL_PATH = (
     ROOT
     / "models"
-    / "objects_exp2"
-    / "water_bottle_yolov8s_75ep"
+    / "objects_exp3"
+    / "water_bottle_new_yolov8s_75ep"
     / "weights"
     / "best.pt"
 )
@@ -35,8 +35,8 @@ def main():
 
         # Run YOLO inference
         results = model.predict(
-            source=frame,
-            conf=0.5,
+            source=frame, 
+            conf=0.6,
             verbose=False
         )
 

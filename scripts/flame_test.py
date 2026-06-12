@@ -1,4 +1,5 @@
 import cv2
+import time
 from pathlib import Path
 from ultralytics import YOLO
 
@@ -27,6 +28,9 @@ def main():
         print("Error: Could not open webcam.")
         return
 
+    last_fire_time = 0
+    fire_hold_seconds = 3
+
     while True:
         success, frame = cap.read()
 
@@ -36,37 +40,47 @@ def main():
 
         results = model.predict(
             source=frame,
-            conf=0.2,
+            conf=0.5,
             device=0,
             verbose=False
         )
 
         annotated_frame = results[0].plot()
 
-        fire_detected = False
+        fire_detected_now = False
 
         for box in results[0].boxes:
-            conf = float(box.conf[0])
             cls_id = int(box.cls[0])
-            label = model.names[cls_id]
+            label = model.names[cls_id].lower()
 
-            if label == "fire" and conf >= 0.35:
-                fire_detected = True
+            if label == "fire":
+                fire_detected_now = True
+                last_fire_time = time.time()
+                break
 
-        if fire_detected:
-            prompt = "FLAME DETECTED - Please check nearby hazards"
-        else:
-            prompt = "No flame detected"
+        show_fire_prompt = (time.time() - last_fire_time) <= fire_hold_seconds
 
-        cv2.putText(
-            annotated_frame,
-            prompt,
-            (20, 40),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            0.8,
-            (0, 0, 255) if fire_detected else (0, 255, 0),
-            2
-        )
+        if show_fire_prompt:
+            prompt = "FLAME DETECTED - Please take action"
+
+            # Draw solid background so text is not hidden by YOLO boxes
+            cv2.rectangle(
+                annotated_frame,
+                (10, 10),
+                (620, 60),
+                (0, 0, 255),
+                -1
+            )
+
+            cv2.putText(
+                annotated_frame,
+                prompt,
+                (20, 45),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.8,
+                (255, 255, 255),
+                2
+            )
 
         cv2.imshow("Flame Detection - Press Q to Quit", annotated_frame)
 
