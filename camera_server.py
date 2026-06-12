@@ -17,11 +17,11 @@ FIRE_MODEL_PATH = ROOT / "models" / "flame_exp1" / "flame_yolov8n_30ep" / "weigh
 
 EVIDENCE_DIR = ROOT / "evidence"
 EVIDENCE_DIR.mkdir(exist_ok=True)
-
-SUPABASE_URL = "https://dxnitvbjmbkeevholbxq.supabase.co"
-SUPABASE_KEY = "sb_publishable__3aXdNDGkBc21pHSaXR9Xg_615BmxWA"
+'''
+SUPABASE_URL = "Placeholder"
+SUPABASE_KEY = "Placeholder"
 SUPABASE_BUCKET = "task-evidence"
-
+'''
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 object_model = YOLO(str(OBJECT_MODEL_PATH))
